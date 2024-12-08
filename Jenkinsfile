@@ -1,6 +1,7 @@
 pipeline {
     agent any
 
+
     stages {
         stage('Clone Repo') {
             steps {
@@ -8,15 +9,35 @@ pipeline {
             }
         }
 
+        stage('Build Frontend Docker Image') {
+            steps {
+                dir("ui") {
+                    script {
+                        docker.build("ui")
+                    }
+                }
+            }
+        }
+
+        stage('Build Backend Docker Image') {
+            steps {
+                dir("back") {
+                    script {
+                        docker.build("back")
+                    }
+                }
+            }
+        }
+
         stage('Deploy Frontend') {
             steps {
                 script {
-                    // Stop and remove existing frontend container if exists
+                    // Stop and remove existing frontend container =
                     bat "docker stop ui || true"
-                    bat "docker rm ui || true"
+                    bat "docker rm ui|| true"
                     
                     // Run the frontend container
-                    bat "docker run -d --network bis_network --name ui -p 8081:80 ui"
+                    bat "docker run -d  --network bis_network --name ui -p 8081:80 ui"
                 }
             }
         }
@@ -29,7 +50,7 @@ pipeline {
                     bat "docker rm back || true"
                     
                     // Run the backend container
-                    bat "docker run -d --network bis_network --name back -p 8082:443 back"
+                    bat "docker run -d  --network bis_network --name back -p 8082:443 back"
                 }
             }
         }
