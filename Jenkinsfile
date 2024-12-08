@@ -12,7 +12,7 @@ pipeline {
             steps {
                 dir("ui") {  // Ensure 'ui' directory contains the frontend Dockerfile
                     script {
-                        sh "docker build -t ui ."
+                        bash "docker build -t ui ."
                     }
                 }
             }
@@ -22,7 +22,7 @@ pipeline {
             steps {
                 dir("nginx") {  // Ensure 'nginx' directory contains the backend Dockerfile
                     script {
-                        sh "docker build -t back ."
+                        bash "docker build -t back ."
                     }
                 }
             }
@@ -32,11 +32,11 @@ pipeline {
             steps {
                 script {
                     // Stop and remove existing frontend container if exists
-                    sh "docker stop ui || true"
-                    sh "docker rm ui || true"
+                    bash "docker stop ui || true"
+                    bash "docker rm ui || true"
                     
                     // Run the frontend container
-                    sh "docker run -d --network bis_network --name ui -p 8081:80 ui"
+                    bash "docker run -d --network bis_network --name ui -p 8081:80 ui"
                 }
             }
         }
@@ -45,11 +45,11 @@ pipeline {
             steps {
                 script {
                     // Stop and remove existing backend container if exists
-                    sh "docker stop back || true"
-                    sh "docker rm back || true"
+                    bash "docker stop back || true"
+                    bash "docker rm back || true"
                     
                     // Run the backend container
-                    sh "docker run -d --network bis_network --name back -p 8082:443 back"
+                    bash "docker run -d --network bis_network --name back -p 8082:443 back"
                 }
             }
         }
