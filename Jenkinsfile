@@ -21,7 +21,7 @@ pipeline {
             steps {
                 dir("ui") {
                     script {
-                        docker.build("ui")
+                        bat "docker build -t ui ."
                     }
                 }
             }
@@ -31,7 +31,7 @@ pipeline {
             steps {
                 dir("back") {
                     script {
-                        docker.build("back")
+                        bat "docker build -t back ."
                     }
                 }
             }
