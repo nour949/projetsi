@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurants</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <h1>Liste des Restaurants</h1>
+
+    <table id="restaurant-table">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Adresse</th>
+                <th>Catégorie</th>
+                <th>Note</th>
+            </tr>
+        </thead>
+        <tbody id="restaurant-list">
+          
+        </tbody>
+    </table>
+
+    <script>
+        // Récupérer les données depuis l'API Node.js
+        fetch('https://localhost:8082/')
+            .then(response => response.json())
+            .then(data => {
+                const tableBody = document.getElementById('restaurant-list');
+                data.forEach(item => {
+                    // Créer une ligne pour chaque restaurant
+                    const row = document.createElement('tr');
+                    
+                    // Créer des cellules pour chaque attribut du restaurant
+                    const nameCell = document.createElement('td');
+                    nameCell.textContent = item.name || 'Nom inconnu';
+                    row.appendChild(nameCell);
+
+                    const addressCell = document.createElement('td');
+                    addressCell.textContent = item.address || 'Adresse inconnue';
+                    row.appendChild(addressCell);
+
+                    const categoryCell = document.createElement('td');
+                    categoryCell.textContent = item.category || 'Catégorie inconnue';
+                    row.appendChild(categoryCell);
+
+                    const ratingCell = document.createElement('td');
+                    ratingCell.textContent = item.rating || 'Non noté';
+                    row.appendChild(ratingCell);
+
+                    // Ajouter la ligne au tableau
+                    tableBody.appendChild(row);
+                });
+            })
+            .catch(error => console.error('Erreur lors du chargement des données :', error));
+    </script>
+</body>
+</html>
