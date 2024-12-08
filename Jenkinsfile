@@ -1,15 +1,6 @@
 pipeline {
     agent any
 
-    environment {
-        FRONTEND_DIR = 'front'
-        BACKEND_DIR = 'back'
-        FRONTEND_IMAGE = 'frontend-image'
-        BACKEND_IMAGE = 'backend-image'
-        FRONTEND_PORT = '8083'
-        BACKEND_PORT = '8082'
-    }
-
     stages {
         stage('Clone Repo') {
             steps {
@@ -19,7 +10,7 @@ pipeline {
 
         stage('Build Frontend Docker Image') {
             steps {
-                dir("ui") {
+                dir("ui") {  // Ensure 'ui' directory contains the frontend Dockerfile
                     script {
                         bat "docker build -t ui ."
                     }
@@ -29,7 +20,7 @@ pipeline {
 
         stage('Build Backend Docker Image') {
             steps {
-                dir("back") {
+                dir("nginx") {  // Ensure 'nginx' directory contains the backend Dockerfile
                     script {
                         bat "docker build -t back ."
                     }
@@ -40,12 +31,12 @@ pipeline {
         stage('Deploy Frontend') {
             steps {
                 script {
-                    // Stop and remove existing frontend container =
+                    // Stop and remove existing frontend container if exists
                     bat "docker stop ui || true"
-                    bat "docker rm ui|| true"
+                    bat "docker rm ui || true"
                     
                     // Run the frontend container
-                    bat "docker run -d  --network bis_network --name ui -p 8081:80 ui"
+                    bat "docker run -d --network bis_network --name ui -p 8081:80 ui"
                 }
             }
         }
@@ -58,7 +49,7 @@ pipeline {
                     bat "docker rm back || true"
                     
                     // Run the backend container
-                    bat "docker run -d  --network bis_network --name back -p 8082:443 back"
+                    bat "docker run -d --network bis_network --name back -p 8082:443 back"
                 }
             }
         }
